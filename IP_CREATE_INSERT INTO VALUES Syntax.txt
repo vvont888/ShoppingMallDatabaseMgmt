@@ -1,0 +1,219 @@
+use project
+
+-- CREATE TABLES ------------------------------------------------------------------------------------------------------------------------------------
+
+CREATE TABLE DEALERS (
+TaxID				VarChar(10)			NOT NULL UNIQUE,
+FName				Char(15)				NOT NULL, 
+LName				Char(15)				NOT NULL, 
+StreetAddress			VarChar(35)			NULL,
+City				Char(15)				NULL,
+State				Char(2)				NULL, 
+Zip				Char(10)				NULL, 
+Phone				Char(12)				NULL,
+CellPhone			Char(12)				NOT NULL,
+Comments			VarChar(60)			NULL,
+CONSTRAINT			TAX_PK				PRIMARY KEY(TaxID)	
+);
+
+CREATE TABLE ITEMS(
+ItemID				Int				NOT NULL IDENTITY (20100, 10),
+ItemDescription			VarChar(100)			NULL,
+Price				Numeric(9,2)			NOT NULL,
+CONSTRAINT			ITEM_PK				PRIMARY KEY(ItemID)
+);
+
+CREATE TABLE BOOTHS(
+BoothID				VarChar(5)			NOT NULL UNIQUE,
+BoothName			VarChar(25)			NOT NULL,
+Size				VarChar(5)			NOT NULL,
+Location				Char(20)				NOT NULL, 
+Color				Char(6)				NOT NULL, 
+RafterOrCarpet			Char(6)				NOT NULL, 
+Rent				Numeric(9,2)			NOT NULL,
+CONSTRAINT			BOOTH_PK		PRIMARY KEY(BoothID)
+);
+
+CREATE TABLE COMMISSIONS(
+CommissionID			Int				NOT NULL IDENTITY (50000, 5),
+CommissionRate			Numeric(9,2)			NOT NULL,
+CONSTRAINT			COM_PK				PRIMARY KEY(CommissionID),
+);
+
+CREATE TABLE SALES(
+SaleID				Int				NOT NULL IDENTITY (100,10),
+Quantity				Int				NOT NULL,
+Date				Date				NOT NULL,
+BoothID				VarChar(5)			NOT NULL,
+ItemID				Int				NOT NULL,
+CommissionID			Int				NOT NULL,
+CONSTRAINT			SALES_PK			PRIMARY KEY(SaleID),	
+CONSTRAINT			CMS_FK1			FOREIGN KEY(CommissionID)
+							REFERENCES COMMISSIONS(CommissionID)
+								ON UPDATE CASCADE
+								ON DELETE NO ACTION,
+CONSTRAINT			ITEM_FK			FOREIGN KEY(ItemID)
+								REFERENCES ITEMS(ItemID)
+								ON UPDATE CASCADE
+								ON DELETE NO ACTION,
+CONSTRAINT			BTH_FK			FOREIGN KEY (BoothID)
+								REFERENCES BOOTHS(BoothID)
+								ON UPDATE NO ACTION
+								ON DELETE CASCADE
+);
+
+
+
+CREATE TABLE LEASES(
+LeaseID				Int				NOT NULL IDENTITY (30000, 1),
+EffectiveDate			Date				NOT NULL,
+EndDate				Date				NOT NULL,
+TaxID				VarChar(10)			NOT NULL,
+BoothID				VarChar(5)			NOT NULL,
+CONSTRAINT			LEASE_PK			PRIMARY KEY(LeaseID),
+CONSTRAINT			TAX_FK3				FOREIGN KEY(TaxID)
+								REFERENCES DEALERS(TaxID)
+								ON UPDATE NO ACTION
+								ON DELETE NO ACTION,
+CONSTRAINT			BOOTH_FK1			FOREIGN KEY(BoothID)
+								REFERENCES BOOTHS(BoothID)
+								ON UPDATE NO ACTION
+								ON DELETE NO ACTION
+);
+
+CREATE TABLE PAYMENTS(
+PaymentID			Int				NOT NULL IDENTITY (40001, 1),
+AmountRemain			Numeric(9,2)			NULL,
+PayDate				Date				NOT NULL,
+TaxID				VarChar(10)			NOT NULL,
+CONSTRAINT			PAYMNT_FK			PRIMARY KEY(PaymentID),
+CONSTRAINT			TAX_FK4				FOREIGN KEY(TaxID)
+								REFERENCES DEALERS(TaxID)
+								ON UPDATE NO ACTION
+								ON DELETE NO ACTION
+);
+--END CREATE TABLE ------------------------------------------------------------------------------------------------------------
+
+use project
+
+-- INSERT TABLE VALUES --------------------------------------------------------------------------------------
+-- DEALERS -----------------------------------------------------------------------------------------------------
+INSERT INTO DEALERS VALUES('34-2534587','Sally','Sue','1719 Gall Ave','Pittsburgh','PA','15209','255-785-6935','255-453-9684','Call cellphone first. Up to 8% discount is approved');
+INSERT INTO DEALERS(TaxID, FName, LName, StreetAddress, City, State, Zip, Phone, CellPhone) VALUES('34-6237452','Lake','Smith','401 Clematis St','West Palm Beach','FL','33401','561-659-8025','516-822-1425');
+INSERT INTO DEALERS VALUES ('34-5074519','John','Green','1000 Wilson Blvd','Arlington','VA','22209','703-276-9500','702-458-3294','Call cellphone first. Up to 8% discount is approved');
+INSERT INTO DEALERS (TaxID, FName, LName, StreetAddress, City, State, Zip, CellPhone, Comments) VALUES('34-9456287','Mitchel','Fields','2200 Fletcher Ave','Fort Lee','NJ','07024','201-224-2680','Accommodate available booth');
+INSERT INTO DEALERS (TaxID, FName, LName, StreetAddress, City, State, Zip, Phone, CellPhone) VALUES('34-2355899','Paul','Miller','2141 Rosecrans Ave','El Segundo','CA','90245','310-726-2700','310-726-2700');
+INSERT INTO DEALERS (TaxID, FName, LName, StreetAddress, City, State, Zip, CellPhone, Comments) VALUES('34-8512963','Alen','Lee','PO Box 22','Sonoma','CA','95476','758-451-2369','Accommodate available booth');
+INSERT INTO DEALERS (TaxID, FName, LName, StreetAddress, City, State, Zip, CellPhone, Comments) VALUES ('34-7410936','Lucy','White','60 Danbury Rd','Wilton','CT','06897','203-254-6700','Call cellphone first. Up to 8% discount is approved');
+INSERT INTO DEALERS (TaxID, FName, LName, StreetAddress, City, State, Zip, CellPhone, Comments) VALUES('34-4712935','David','King','2545 Windward Concord','Alpharetta','GA','30005','678-319-8000','Accommodate available booth');
+INSERT INTO DEALERS VALUES ('34-7852493','Tom','Taylor','75 N Country Rd','Port Jefferson','NY','11777','631-473-1320','613-485-7623','Call cellphone first. Up to 8% discount is approved');
+INSERT INTO DEALERS VALUES ('34-2589635','Augustine','LeBron','131 Smokey Ln','Marienville','PA','16239','814-927-6628','814-927-2286','Call cellphone first. Up to 8% discount is approved');
+INSERT INTO DEALERS VALUES ('34-7439517','Orpha','Ansley','3883 Howard Hughes Pl','Las Vegas','NV','89169','702-735-2200','702-735-2289','Accommodate available booth');
+INSERT INTO DEALERS (TaxID, FName, LName, StreetAddress, City, State, Zip, Phone, CellPhone) VALUES('34-9527634','Miguel','Thomas','250 Monroe Ave','Grand Rapids','MI','49503','616-458-6805','646-458-6669');
+INSERT INTO DEALERS (TaxID, FName, LName, StreetAddress, City, State, Zip, CellPhone, Comments)VALUES('34-0012835','Helen','Emmett','1633 Broadway','New York','NY','10019','212-489-1600','Call cellphone first. Up to 8% discount is approved');
+INSERT INTO DEALERS VALUES('34-9872308','Leslie','Maury','11505 E 43rd St','Tulsa','OK','74146','918-663-7500','918-663-8819','Accommodate available booth');
+INSERT INTO DEALERS(TaxID, FName, LName, StreetAddress, City, State, Zip, Phone, CellPhone) VALUES('34-9010084','Jeff','Johnson','6290 W Erie St','Chandler','AZ','85226','480-892-4321','480-935-4785');
+
+-- ITEMS --------------------------------------------------------------
+INSERT INTO ITEMS VALUES ('Men Fashion', 60.59);
+INSERT INTO ITEMS VALUES ('Women Fashion',70.99);
+INSERT INTO ITEMS VALUES ('Kid Fashion', 30.50);
+INSERT INTO ITEMS VALUES ('Shoes', 50.99);
+INSERT INTO ITEMS VALUES ('Jewelry & Accessories', 200.99);
+INSERT INTO ITEMS VALUES ('Electronics', 199.99);
+INSERT INTO ITEMS VALUES ('Appliance', 90.59);
+INSERT INTO ITEMS VALUES ('Beauty & Personal Care', 50.99);
+INSERT INTO ITEMS VALUES ('Furniture', 150.00);
+INSERT INTO ITEMS VALUES ('Computers & IT Accessories', 99.99);
+INSERT INTO ITEMS VALUES ('Housewares', 40.50);
+INSERT INTO ITEMS VALUES ('Sports & Wellbeings', 25.99);
+INSERT INTO ITEMS VALUES ('Home Goods', 99.99);
+INSERT INTO ITEMS VALUES ('Nutrition & Vitamins', 59.50);
+INSERT INTO ITEMS VALUES ('Art & Craft', 10.50);
+
+-- BOOTHS -------------------------------------------------------------------------------------------------------
+INSERT INTO BOOTHS VALUES ('A-01', 'Ralph Lauren ', '12x18', 'Outside perimeter', 'Yellow', 'Rafter', 310.00);			
+INSERT INTO BOOTHS VALUES ('A-02', 'Chanel', '12x18', 'Outside perimeter', 'Green', 'Rafter', 310.00);			
+INSERT INTO BOOTHS VALUES ('A-03', 'Carter', '12x12', 'Outside perimeter', 'White', 'Rafter', 290.00);			
+INSERT INTO BOOTHS VALUES ('A-04', 'Nike', '12x12', 'Outside perimeter', 'Yellow', 'Rafter', 290.00);			
+INSERT INTO BOOTHS VALUES ('A-05', 'Cartier', '12x12', 'Outside perimeter', 'Green', 'Carpet', 290.00);			
+INSERT INTO BOOTHS VALUES ('B-01', 'Samsung', '8x10', 'Inside perimeter', 'Tan', 'Carpet', 120.00);			
+INSERT INTO BOOTHS VALUES ('B-02', 'LG', '8x10', 'Inside perimeter', 'White', 'Rafter', 120.00);			
+INSERT INTO BOOTHS VALUES ('B-03', 'Sephora', '8x10', 'Inside perimeter', 'Green', 'Carpet', 120.00);			
+INSERT INTO BOOTHS VALUES ('B-04', 'Dell', '8x8', 'Inside perimeter', 'Tan', 'Carpet', 105.00);			
+INSERT INTO BOOTHS VALUES ('B-05', 'GNC', '8x8', 'Inside perimeter', 'Tan', 'Carpet', 105.00);			
+INSERT INTO BOOTHS VALUES ('C-01', 'Kitchen Aid', '8x8', 'Aisle', 'White', 'Carpet', 90.00);			
+INSERT INTO BOOTHS VALUES ('C-02', 'Dicks Sporting Goods', '8x8', 'Aisle', 'Green', 'Carpet', 90.00);			
+INSERT INTO BOOTHS VALUES ('C-03', 'Marshalls', '8x8', 'Aisle', 'White', 'Carpet', 90.00);			
+INSERT INTO BOOTHS VALUES ('C-04', 'Living Spaces', '8x8' ,'Aisle', 'Tan', 'Carpet', 90.00);			
+INSERT INTO BOOTHS VALUES ('C-05', 'Michaels', '8x8', 'Aisle', 'Green', 'Carpet', 90.00);	
+
+--COMMISSIONS ---------------------------------------------------------------------------------------------------
+INSERT INTO COMMISSIONS VALUES (0.1);
+INSERT INTO COMMISSIONS VALUES (0.12);
+INSERT INTO COMMISSIONS VALUES (0.13);
+INSERT INTO COMMISSIONS VALUES (0.04);
+INSERT INTO COMMISSIONS VALUES (0.15);
+INSERT INTO COMMISSIONS VALUES (0.06);
+INSERT INTO COMMISSIONS VALUES (0.07);
+INSERT INTO COMMISSIONS VALUES (0.08);
+INSERT INTO COMMISSIONS VALUES (0.09);
+INSERT INTO COMMISSIONS VALUES (0.01);
+INSERT INTO COMMISSIONS VALUES (0.11);
+INSERT INTO COMMISSIONS VALUES (0.02);
+INSERT INTO COMMISSIONS VALUES (0.03);
+INSERT INTO COMMISSIONS VALUES (0.14);
+INSERT INTO COMMISSIONS VALUES (0.05);
+
+-- SALES --------------------------------------------------------------------------------------------------------------
+INSERT INTO SALES VALUES( 1000,'31-JAN-2021', 'A-01', 20100, 50000);
+INSERT INTO SALES VALUES( 1500,'31-JAN-2021', 'A-02', 20110, 50005);
+INSERT INTO SALES VALUES( 200,'31-JAN-2021', 'A-03', 20120, 50010);
+INSERT INTO SALES VALUES( 200,'31-JAN-2021', 'A-04', 20130, 50015);
+INSERT INTO SALES VALUES( 500,'31-JAN-2021', 'A-05', 20140, 50020);
+INSERT INTO SALES VALUES( 300,'28-FEB-2021', 'C-05', 20150, 50025);
+INSERT INTO SALES VALUES( 120,'28-FEB-2021', 'B-01', 20160, 50030);
+INSERT INTO SALES VALUES( 300,'28-FEB-2021', 'B-02', 20170, 50035);
+INSERT INTO SALES VALUES( 50,'28-FEB-2021', 'B-03', 20180, 50040);
+INSERT INTO SALES VALUES( 500,'28-FEB-2021', 'B-04', 20190, 50045);
+INSERT INTO SALES VALUES( 200,'31-MAR-2021', 'B-05', 20200, 50050);
+INSERT INTO SALES VALUES( 150,'30-APR-2021', 'C-01', 20210, 50055);
+INSERT INTO SALES VALUES( 100,'30-APR-2021', 'C-02', 20220, 50060);
+INSERT INTO SALES VALUES( 200,'30-APR-2021', 'C-03', 20230, 50065);
+INSERT INTO SALES VALUES( 500,'30-APR-2021', 'C-04', 20240, 50070);
+
+--LEASES ----------------------------------------------------------------------------------------------------------------
+INSERT INTO LEASES VALUES('01-JAN-2021','31-DEC-2026','34-9456287','A-01');
+INSERT INTO LEASES VALUES   ('01-JAN-2021','31-DEC-2026','34-4712935','A-02');
+INSERT INTO LEASES VALUES ('01-JAN-2021','31-DEC-2026','34-2534587','A-03');
+INSERT INTO LEASES VALUES   ('01-JAN-2021','31-DEC-2026','34-2355899','A-04');
+INSERT INTO LEASES VALUES    ('01-JAN-2021','31-DEC-2026','34-5074519','A-05');
+INSERT INTO LEASES VALUES    ('01-JAN-2021','31-DEC-2026','34-7439517','B-01');
+INSERT INTO LEASES VALUES    ('01-JAN-2021','31-DEC-2026','34-0012835','B-02');
+INSERT INTO LEASES VALUES    ('28-FEB-2021','27-FEB-2026','34-6237452','B-03');
+INSERT INTO LEASES VALUES    ('28-FEB-2021','27-FEB-2026','34-9010084','B-04');
+INSERT INTO LEASES VALUES    ('28-FEB-2021','27-FEB-2026','34-7852493','B-05');
+INSERT INTO LEASES VALUES    ('28-FEB-2021','27-FEB-2026','34-9872308','C-01');
+INSERT INTO LEASES VALUES    ('28-FEB-2021','27-FEB-2025','34-8512963','C-02');
+INSERT INTO LEASES VALUES    ('28-FEB-2021','27-FEB-2025','34-2589635','C-03');
+INSERT INTO LEASES VALUES    ('28-FEB-2021','27-FEB-2026','34-9527634','C-04');
+INSERT INTO LEASES VALUES    ('30-APR-2021','29-APR-2025','34-7410936','C-05');
+
+--PAYMENTS ------------------------------------------------------------------------------------------------------------
+INSERT INTO PAYMENTS  (PayDate, TaxID) VALUES ('15-FEB-2021','34-2534587');
+INSERT INTO PAYMENTS (PayDate, TaxID) VALUES     ('15-FEB-2021','34-6237452');
+INSERT INTO PAYMENTS (PayDate, TaxID)  VALUES     ('15-MAR-2021','34-5074519');
+INSERT INTO PAYMENTS  (PayDate, TaxID) VALUES     ('15-APR-2021','34-9456287');
+INSERT INTO PAYMENTS (PayDate, TaxID) VALUES     ('15-MAY-2021','34-2355899');
+INSERT INTO PAYMENTS (PayDate, TaxID) VALUES     ('15-FEB-2021','34-8512963');
+INSERT INTO PAYMENTS(PayDate, TaxID)  VALUES     ('15-MAR-2021','34-7410936');
+INSERT INTO PAYMENTS (PayDate, TaxID) VALUES     ('15-APR-2021','34-4712935');
+INSERT INTO PAYMENTS (PayDate, TaxID) VALUES     ('15-MAY-2021','34-7852493');
+INSERT INTO PAYMENTS (PayDate, TaxID) VALUES     ('15-FEB-2021','34-2589635');
+INSERT INTO PAYMENTS (PayDate, TaxID)  VALUES     ('15-MAR-2021','34-7439517');
+INSERT INTO PAYMENTS(PayDate, TaxID)  VALUES     ('15-APR-2021','34-9527634');
+INSERT INTO PAYMENTS (PayDate, TaxID) VALUES     ('15-MAY-2021','34-0012835');
+INSERT INTO PAYMENTS (PayDate, TaxID) VALUES    ('15-FEB-2021','34-9872308');
+INSERT INTO PAYMENTS (PayDate, TaxID) VALUES     ('15-MAR-2021','34-9010084');
+
+---END--------------------------------------------------------------------------------------------------------------------------------------------

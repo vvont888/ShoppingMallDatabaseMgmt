@@ -1,0 +1,43 @@
+--A **List the total sales for each dealer over a month’s time frame** 
+SELECT D.TaxID, D.FName, D.LName, Date, FORMAT(SUM(Price*Quantity), 'N2') AS TotalSales
+FROM DEALERS AS D, LEASES AS L, BOOTHS AS B, ITEMS AS I, SALES AS S
+WHERE D.TaxID = L.TaxID
+AND L.BoothID = B.BoothID
+AND B.BoothID = S.BoothID
+AND S.ItemID = I.ItemID
+GROUP BY D.TaxID, D.FName, D.LName, Date;
+
+--B** List the amount due from NHD to each dealer after all deductions are considered in a particular month**
+SELECT D.TaxID, D.FName, D.LName, Date,
+	FORMAT(SUM(Quantity*Price) - (SUM((Quantity*Price)*CommissionRate) + Rent), 'N2') AS AmountRemain
+FROM DEALERS AS D, LEASES AS L, BOOTHS AS B, ITEMS AS I, SALES AS S, COMMISSIONS AS C
+WHERE D.TaxID = L.TaxID
+AND L.BoothID = B.BoothID
+AND B.BoothID = S.BoothID
+AND I.ItemID = S.ItemID
+AND S.CommissionID = C.CommissionID
+AND MONTH(Date) = 1
+AND YEAR(Date) = 2021
+GROUP BY D.TaxID, D.FName, D.LName, Date, Rent;
+
+--C**List the dealers and their corresponding booth(s) lease details**
+SELECT *
+FROM DEALERS AS D, LEASES AS L
+WHERE D.TaxID = L.TaxID;
+
+--D**List the revenues for NHD in a particular month
+SELECT L.TaxID, Date, FORMAT(((SUM(Quantity*Price)*CommissionRate) + Rent), 'N2') AS Revenue
+FROM LEASES AS L, BOOTHS AS B, SALES AS S, ITEMS AS I, COMMISSIONS AS C
+WHERE L.BoothID = B.BoothID
+AND B.BoothID = S.BoothID
+AND S.ItemID = I.ItemID
+AND S.CommissionID = C.CommissionID
+AND MONTH(Date) = 1
+AND YEAR(Date) = 2021
+GROUP BY L.TaxID, Date, Rent, CommissionRate;
+
+--E**List the booths that have not been leased**
+SELECT BoothID AS Vacant, EndDate AS VacantAsOf
+FROM LEASES 
+WHERE YEAR(EndDate) < 2050
+GROUP BY BoothID, EndDate; 
